@@ -22,9 +22,9 @@ var db = new Schema({
 
 var UserBD = mongoose.model('userDB',db);
 
-// app.get("/", function (req, res) {
-//     res.sendFile(__dirname + "/index.html");
-// })
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/index.html");
+})
 
 io.on('connection', function (socket) {
     // console.log('connection :' + socket.id);
