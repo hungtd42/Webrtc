@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    
+    <div class="wrapper fadeInDown" id="chat">
+      <div id="formContent">
+        <!-- Tabs Titles -->
+        <div id="err_msg"></div>
+        <!-- Icon -->
+        <div class="fadeIn first">
+          <img src="naturo-monkey-selfie.jpg" id="icon" alt="User Icon" />
+        </div>
+
+        <!-- Login Form -->
+        <div class="nav justify-content-center">
+          <input type="text" id="un" class="fadeIn second" name="login" placeholder="login">
+          <input type="text" id="password" class="fadeIn third" name="login" placeholder="Room">
+          <button id="cl" >Send</button>
+        </div>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+          <a class="underlineHover" href="#">Forgot Password?</a>
+        </div>
+
+      </div>
+    </div>
+
+        <!-- <div id="chat">
+            <div id="err_msg"></div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@</span>
+              </div>
+              <input type="text" id="un" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <button id="cl" >Send</button>
+        </div> -->
+    <div id="dad"> 
+        <div id="listUser" style="display: none;">
+            <p id="listTop">List User</p>
+            <div id="on"></div>
+        </div>
+        <div id="mario-chat1" >
+            <div id="chat-window1">
+                <div id="job1"></div>
+                <div id="output1"></div>
+                <div id="feed1"></div>
+            </div>
+            <input id="txt1" type="text" placeholder="Message" />
+            <button id="sub1">Send</button>
+        </div>
+        <div class="msg_box" style="right:290px; display: none;">
+            <div class="msg_head">
+                <span id="box_name" name=""></span><br></br>
+                <span><i class="fas fa-video" id="videoCall"></i></span>
+                <video src="" id="sendVideo" width="300px" controls></video>
+                <video src="" id="receiverVideo" width="300px" controls></video>
+                <span><i class="fas fa-phone" id="phoneCall"></i></span>
+                <span><i class='far fa-arrow-alt-circle-up' style='font-size:14px;' id="shareFile"></i></span>
+                <div class="close">x</div>
+            </div>
+            <div class="msg_wrap">
+                <div class="msg_body">
+                    <div class="msg_push"></div>
+                </div>
+                <div class="msg_footer"><input class="msg_input" rows="1"></input></div>
+            </div>
+        </div>  
+        <div id="mario-chat" hidden="">
+
+            <!-- <h2>Mario Chat</h2> -->
+            <div id="chat-window">
+                <div id="job"></div>
+                <div id="output"></div>
+                <div id="feed"></div>
+            </div>
+            <input id="name" type="text" placeholder="private" />
+            <input id="txt" type="text" placeholder="Message" />
+            <button id="sub">Send</button>
+        </div>
+    </div>
+
+</body>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(document).ready(function () {
+        var socket = io.connect();
+        // var peer = new Peer();
+        var peer = new Peer({ key: 'peerjs', host: "skipye.herokuapp.com", secure: true, port: 443 });
+        var txt = document.getElementById('txt'),
+            n = document.getElementById('name'),
+            c = document.getElementById('sub'),
+            feedback = document.getElementById('feed'),
+            username = document.getElementById('un'),
+            win = document.getElementById('chat'),
+            chatForm = document.getElementById('cl'),
+            chatShow = document.getElementById('mario-chat');
+           var $on= document.getElementById('on');
+        
+
+        // socket.emit('my other event', {
+        //     hi: 'ok'
+        // })
+        peer.on('open',id=>{
+            $('#cl').click(function (e) {
+                            if(username.value == ''){
+                                err_msg.innerHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error ! </strong> User not null. Please enter retype !</div>';
+                                        $("#err_msg").fadeTo(1000, 500).slideUp(1000, function(){
+                                            $("#err_msg").alert('close');
+                                        });
+                            }else{
+                            socket.emit('users', {userName: $('#un').val(),peerId: id}, function(data){
+                                    if(!data){
+                                        err_msg.innerHTML = '<div class="alert alert-danger alert-dismissible fade show"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error ! </strong> User exist. Please enter retype !</div>';
+                                        $("#err_msg").fadeTo(1000, 500).slideUp(1000, function(){
+                                            $("#err_msg").alert('close');
+                                        });
+                                    }
+                                    else{
+                                        win.hidden = true;
+                                        chatShow.hidden = false;
+                                        $('#listUser').show();
+                                        socket.emit('joinroom',$('#password').val());
+                                        // socket.on('success',(msg)=>{console.log(1)});
+                                    }
+                                 });
+                            $('#un').val('');
+                            }
+                        });
+        })
+        
+
+        // $('.msg_input').keypress(function(e){
+        //     if(e.keyCode == 13){
+        //         var msg = $(this).val();
+        //         socket.emit('users', $('#un').value, function(data){
+        //             if(data){
+        //                 win.hidden = true;
+        //                 chatShow.hidden = false;
+        //                 $('#listUser').show();
+        //             }
+        //             else{
+        //                 err_msg.innerHTML = '<div class="alert alert-danger alert-dismissible fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error ! </strong> User exist. Please enter retype !</div>';
+        //                 $("#err_msg").fadeTo(1000, 500).slideUp(1000, function(){
+        //                     $("#err_msg").alert('close');
+        //                 });
+        //             }
+        //          });
+        //         console.log(msg);
+        //         $('#un').value = '';
+        //     }
+        // }
+        // socket.on('new:user', function(data){
+        //     $.each(data, function(key, value){
+        //         job.innerHTML = '<a>'+value+'</a><p>joined room</p>';
+        //     });
+        // })
+
+        function userNameClick() {
+            $('.user').on('click',function(){
+                if($(this).text()){
+                $('.msg_box').show();
+                $('#box_name').html($(this).text());
+                socket.emit('open box', $(this).text());}
+            });
+        }
+        // userNameClick();
+        socket.on('username',function(data, peerId){
+            var html = '';
+            // $('#job').append($('<h5>').text(data + ' :has joined the room'));
+            for(i=0; i< data.length; i++){
+                // if(!data1){
+                    // console.log(data[i] + data1);
+                    html += '<div class="user" id="'+peerId+'" name="'+ data[i]+'">'+ data[i]+'</div>';
+                // }
+            }
+            // on.innerHTML = html;
+            $('#on').html(html);
+
+            userNameClick();
+            
+            // $('#feed1').html($(this).text());
+        });
+
+        socket.on('open box username', function(data){
+            // console.log(data);
+            $('.msg_box').show();
+            $('#box_name').html(data.nick);
+        })
+
+
+        socket.on('load old messages', function(docs) {
+            feed.innerHTML = '';
+            for(var i =0; i<docs.length; i++){
+                loadMsg(docs[i]);
+            }
+            $('#chat-window').scrollTop($('#output').height());
+        });
+
+        //close form chat
+        $('.close').click(function(){
+            $('.msg_box').hide();
+        })
+
+        //send chat room
+        c.addEventListener('click', function () {
+            socket.emit('my other event', 
+                txt.value
+                // yourName: n.value
+            );
+            txt.value = "";
+        });
+        txt.addEventListener('keypress', function(data){
+            socket.emit('typing send', data.nick);
+        });
+        
+        socket.on('news', function (data) {
+            console.log(data)
+            feed.innerHTML = '';
+            loadMsg(data);
+            $('#chat-window').scrollTop($('#output').height());
+        });
+        //end chat room
+        $('.msg_input').keypress(function(e){
+            if(e.keyCode == 13){
+                var msg = $(this).val();
+                $(this).val('');
+            socket.emit('send message one', msg, $('#box_name').text());
+            }
+        });
+
+        socket.on('new message one', function(data){
+            console.log('Gui tu '+data.nick);
+            console.log('Gui toi '+data.sendTo);
+            if(data.nick === $('#box_name').text()){
+                $('<div class="msg_b"><b>'+data.nick+': </b>'+data.msg+'</div>').insertBefore('.msg_push');
+                $('.msg_body').scrollTop($('.msg_body')[0].scrollHeight);
+            }else{
+                $('<div class="msg_a"><b>'+data.nick+': </b>'+data.msg+'</div>').insertBefore('.msg_push');
+                $('.msg_body').scrollTop($('.msg_body')[0].scrollHeight);
+            }
+        })
+        //one user
+        //join room
+        socket.on('success', function(data) {
+            $('#job').append($('<h5>').text(data));
+        })
+        //one private
+        socket.on('private name', function (data) {
+            feed.innerHTML = '';
+            $('#job').append($('<h5>').text(data.nick + ' has joined the private'));
+            loadMsg(data);
+            $('#chat-window').scrollTop($('#output').height());
+        });
+        function loadMsg(data){
+            output.innerHTML += '<p><strong>' + data.nick + ':</strong>' + data.msg + '</p>';
+        }
+        socket.on('typing', function(data){
+            feed.innerHTML = '<p><em>'+data.nick+' is typing a mess </em></p>'
+        });
+        //video call
+        // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+        $('#videoCall').on('click', (e)=>{
+            const id = $('.user').attr('id');
+            openVideo().then(stream => {
+                playVideo("sendVideo",stream);
+                const call = peer.call(id, stream);
+               call.on("stream" , function(receiverVideo){
+                    playVideo("receiverVideo" , receiverVideo);
+                });
+            });
+        });
+        function openVideo(){
+            const config = {
+                audio: true,
+                video: true
+            }
+            return navigator.mediaDevices.getUserMedia(config) || navigator.mediaDevices.webkitGetUserMedia(config) || navigator.mediaDevices.mozGetUserMedia(config);
+            
+        }
+        function playVideo(idVideo, stream){
+            const video = document.getElementById(idVideo);
+            video.srcObject=stream;  
+            video.play();
+        }
+        
+        peer.on("call" , call=>{
+            openVideo().then(stream => {
+                call.answer(stream);
+                playVideo("sendVideo" ,stream);
+                call.on("stream" , receiverVideo => {
+                    playVideo("receiverVideo" , receiverVideo);
+                });
+            });
+        });
+    });
+    
+</script>
+
+</html>
