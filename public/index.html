@@ -67,7 +67,7 @@
             <div class="msg_head">
                 <span id="box_name" name=""></span><br></br>
                 <span><i class="fas fa-video" id="videoCall"></i></span>
-                <video src="" id="sendVideo" width="300px" controls></video>
+                <video src="" id="sendVideo" width="300px" controls ></video>
                 <video src="" id="receiverVideo" width="300px" controls></video>
                 <span><i class="fas fa-phone" id="phoneCall"></i></span>
                 <span><i class='far fa-arrow-alt-circle-up' style='font-size:14px;' id="shareFile"></i></span>
@@ -297,7 +297,7 @@
                 audio: true,
                 video: true
             }
-            return navigator.mediaDevices.getUserMedia(config) || navigator.mediaDevices.webkitGetUserMedia(config) || navigator.mediaDevices.mozGetUserMedia(config);
+            return navigator.mediaDevices.getUserMedia(config);
             
         }
         function playVideo(idVideo, stream){
