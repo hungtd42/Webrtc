@@ -6,10 +6,12 @@ var io = require('socket.io')(server);
 app.use(express.static(path.join(__dirname, 'public')));
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
 var users = {};
 var connections = [];
-// mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
-mongoose.connect('mongodb://tranhung2027:Tranhung1996_@ds159840.mlab.com:59840/chatroom', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
+// mongoose.connect('mongodb://tranhung2027:Tranhung1996@ds231739.mlab.com:31739/todo_db',{useNewUrlParser:true});
+app.use(express.static(path.join(__dirname, 'public')));
 server.listen(process.env.PORT || 3000, function (err) {
     if (err) throw err;
     console.log("running ..")
